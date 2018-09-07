@@ -58,6 +58,7 @@ namespace CS_Raycaster
             while (true)
             {
                 RC.UpdatePositions();
+                RC.UpdateFramerate();
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
 
               

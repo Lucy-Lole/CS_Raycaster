@@ -219,24 +219,36 @@ namespace CS_Raycaster
 
         public void TurnLeft()
         {
+            Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
+            playerDirection.x = (playerDirection.x * Math.Cos(rotSpeed) - playerDirection.y * Math.Sin(rotSpeed));
+            playerDirection.y = (oldDirection.x * Math.Sin(rotSpeed) + playerDirection.y * Math.Cos(rotSpeed));
+            Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
+            cameraPlane.x = (cameraPlane.x * Math.Cos(rotSpeed) - cameraPlane.y * Math.Sin(rotSpeed));
+            cameraPlane.y = (oldPlane.x * Math.Sin(rotSpeed) + cameraPlane.y * Math.Cos(rotSpeed));
 
         }
 
         public void TurnRight()
         {
-
+            Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
+            playerDirection.x = (playerDirection.x * Math.Cos(-rotSpeed) - playerDirection.y * Math.Sin(-rotSpeed));
+            playerDirection.y = (oldDirection.x * Math.Sin(-rotSpeed) + playerDirection.y * Math.Cos(-rotSpeed));
+            Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
+            cameraPlane.x = (cameraPlane.x * Math.Cos(-rotSpeed) - cameraPlane.y * Math.Sin(-rotSpeed));
+            cameraPlane.y = (oldPlane.x * Math.Sin(-rotSpeed) + cameraPlane.y * Math.Cos(-rotSpeed));
         }
 
         public void Move(bool forwards)
         {
             Console.WriteLine("Moving");
+            Console.WriteLine(moveSpeed);
             if (forwards)
             {
                 if (worldMap[(int)(playerPosition.x+playerDirection.x*moveSpeed),(int)(playerPosition.y)] == 0)
                 {
                     playerPosition.x += playerDirection.x * moveSpeed;
                 }
-                if (worldMap[(int)(playerPosition.x), (int)(playerPosition.y+playerPosition.y*moveSpeed)] == 0)
+                if (worldMap[(int)(playerPosition.x),(int)(playerPosition.y + playerDirection.y * moveSpeed)] == 0 )
                 {
                     playerPosition.y += playerDirection.y * moveSpeed;
                 }
@@ -247,7 +259,7 @@ namespace CS_Raycaster
                 {
                     playerPosition.x -= playerDirection.x * moveSpeed;
                 }
-                if (worldMap[(int)(playerPosition.x), (int)(playerPosition.y - playerPosition.y * moveSpeed)] == 0)
+                if (worldMap[(int)(playerPosition.x), (int)(playerPosition.y - playerDirection.y * moveSpeed)] == 0)
                 {
                     playerPosition.y -= playerDirection.y * moveSpeed;
                 }
@@ -258,10 +270,10 @@ namespace CS_Raycaster
         public void UpdateFramerate()
         {
             lastTime = currTime;
-            currTime = DateTime.Now.Second;
-            double frameTime = (currTime - lastTime);
-            moveSpeed = frameTime * 4.0;
-            rotSpeed = frameTime * 2.0;
+            currTime = DateTime.Now.Millisecond;
+            double frameTime = (currTime - lastTime)/1000;
+            moveSpeed = frameTime * 5.0;
+            rotSpeed = frameTime * 3.0;
         }
         
 
