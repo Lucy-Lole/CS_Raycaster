@@ -169,11 +169,11 @@ namespace CS_Raycaster
                 // Now we've found where the next wall is, we have to find the actual distance.
                 if (side == 0)
                 {
-                    perpWallDist = (mapX - playerPosition.x + ((1 - stepX) / 2));
+                    perpWallDist = ((mapX - playerPosition.x + ((1 - stepX) / 2)) / rayDir.x);
                 }
                 else
                 {
-                    perpWallDist = (mapY - playerPosition.y + ((1 - stepY)) / 2);
+                    perpWallDist = ((mapY - playerPosition.y + ((1 - stepY)) / 2)) / rayDir.y;
                 }
 
                 // Here we'll start drawing the column of pixels, now we know what, and how far away.
@@ -198,17 +198,52 @@ namespace CS_Raycaster
                 switch(worldMap[mapX, mapY])
                 {
                     case 1:
-                        pen.Color = Color.Aquamarine;
-                        break;
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 0, 102, 102);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255,0,204,204);
+                            break;
+                        }
+                        
                     case 2:
-                        pen.Color = Color.LightSeaGreen;
-                        break;
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 0, 127, 0);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255, 0, 255, 0);
+                            break;
+                        }
+
                     case 3:
-                        pen.Color = Color.Plum;
-                        break;
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 0, 0, 127);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255, 0, 0, 255);
+                            break;
+                        }
+
                     case 4:
-                        pen.Color = Color.LightYellow;
-                        break;
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 175, 175, 0);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255, 255, 255, 0);
+                            break;
+                        }
                 }
 
                 // Now we draw to the frame.
