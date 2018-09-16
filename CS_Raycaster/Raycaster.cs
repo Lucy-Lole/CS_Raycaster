@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
+
 namespace CS_Raycaster
 {
+    using System.Diagnostics;
+
     public class Raycaster
     {
         // Creating the world map.
@@ -252,25 +255,26 @@ namespace CS_Raycaster
             return bmp;
         }
 
-        public void TurnLeft()
+        public void Turn(bool turnRight)
         {
-            Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
-            playerDirection.x = (playerDirection.x * Math.Cos(rotSpeed) - playerDirection.y * Math.Sin(rotSpeed));
-            playerDirection.y = (oldDirection.x * Math.Sin(rotSpeed) + playerDirection.y * Math.Cos(rotSpeed));
-            Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
-            cameraPlane.x = (cameraPlane.x * Math.Cos(rotSpeed) - cameraPlane.y * Math.Sin(rotSpeed));
-            cameraPlane.y = (oldPlane.x * Math.Sin(rotSpeed) + cameraPlane.y * Math.Cos(rotSpeed));
-
-        }
-
-        public void TurnRight()
-        {
-            Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
-            playerDirection.x = (playerDirection.x * Math.Cos(-rotSpeed) - playerDirection.y * Math.Sin(-rotSpeed));
-            playerDirection.y = (oldDirection.x * Math.Sin(-rotSpeed) + playerDirection.y * Math.Cos(-rotSpeed));
-            Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
-            cameraPlane.x = (cameraPlane.x * Math.Cos(-rotSpeed) - cameraPlane.y * Math.Sin(-rotSpeed));
-            cameraPlane.y = (oldPlane.x * Math.Sin(-rotSpeed) + cameraPlane.y * Math.Cos(-rotSpeed));
+            if (!turnRight)
+            {
+                Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
+                playerDirection.x = (playerDirection.x * Math.Cos(rotSpeed) - playerDirection.y * Math.Sin(rotSpeed));
+                playerDirection.y = (oldDirection.x * Math.Sin(rotSpeed) + playerDirection.y * Math.Cos(rotSpeed));
+                Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
+                cameraPlane.x = (cameraPlane.x * Math.Cos(rotSpeed) - cameraPlane.y * Math.Sin(rotSpeed));
+                cameraPlane.y = (oldPlane.x * Math.Sin(rotSpeed) + cameraPlane.y * Math.Cos(rotSpeed));
+            }
+            else
+            {
+                Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
+                playerDirection.x = (playerDirection.x * Math.Cos(-rotSpeed) - playerDirection.y * Math.Sin(-rotSpeed));
+                playerDirection.y = (oldDirection.x * Math.Sin(-rotSpeed) + playerDirection.y * Math.Cos(-rotSpeed));
+                Vector oldPlane = new Vector(cameraPlane.x, cameraPlane.y);
+                cameraPlane.x = (cameraPlane.x * Math.Cos(-rotSpeed) - cameraPlane.y * Math.Sin(-rotSpeed));
+                cameraPlane.y = (oldPlane.x * Math.Sin(-rotSpeed) + cameraPlane.y * Math.Cos(-rotSpeed));
+            }
         }
 
         public void Move(bool forwards)
@@ -302,13 +306,19 @@ namespace CS_Raycaster
         }
 
 
-        public void UpdateFramerate()
+        public void UpdateFramerate(double frameTime)
         {
-            lastTime = currTime;
-            currTime = DateTime.Now.Millisecond;
-            double frameTime = (currTime - lastTime)/1000;
+            //lastTime = currTime;
+            //currTime = DateTime.Now.Ticks;
+            frameTime = frameTime/1000;
             moveSpeed = frameTime * 5.0;
             rotSpeed = frameTime * 3.0;
+
+            if (this.moveSpeed < 0 || this.rotSpeed < 0)
+            {
+                Debug.WriteLine("Error in Math");
+                Debug.WriteLine(this.currTime + " - " + this.lastTime);
+            }
         }
         
 

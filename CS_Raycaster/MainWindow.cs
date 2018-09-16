@@ -8,21 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace CS_Raycaster
 {
     public partial class MainWindow : Form
     {
-        public readonly int W_WIDTH = 1200;
-        public readonly int W_HEIGHT = 800;
+        private const int W_WIDTH = 1200;
+        private const int W_HEIGHT = 800;
 
         private Thread logicThread;
+
+        private Stopwatch frameTime = new Stopwatch();
 
         Raycaster RC = new Raycaster();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.pictureBoxMain.Size = new Size(W_WIDTH, W_HEIGHT);
+            this.ClientSize = new Size(W_WIDTH, W_HEIGHT);
 
             this.KeyPress +=
                 new KeyPressEventHandler(MainWindow_KeyPress);
@@ -33,35 +40,36 @@ namespace CS_Raycaster
 
         public void MainWindow_KeyPress(object sender, KeyPressEventArgs e)
         {
-            Console.WriteLine("Key Pressed!");
-            if (e.KeyChar == 'w')
+            if (Keyboard.IsKeyDown(Key.W))
             {
                 RC.Move(true);
             }
-            if (e.KeyChar == 's')
+
+            if (Keyboard.IsKeyDown(Key.S))
             {
                 RC.Move(false);
             }
-            if (e.KeyChar == 'a')
+            if (Keyboard.IsKeyDown(Key.A))
             {
-                RC.TurnLeft();
+                RC.Turn(false);
             }
-            if (e.KeyChar == 'd')
+            if (Keyboard.IsKeyDown(Key.D))
             {
-                RC.TurnRight();
+                RC.Turn(true);
             }
         }
 
         public void RunLoop()
         {
-            
+            double frameTimeDouble = 0;
             while (true)
             {
+                this.frameTime.Restart();
                 RC.UpdatePositions();
-                RC.UpdateFramerate();
+                RC.UpdateFramerate(frameTimeDouble);
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
-
-              
+                this.frameTime.Stop();
+                frameTimeDouble = this.frameTime.ElapsedMilliseconds;
             }
 
         }
@@ -69,6 +77,11 @@ namespace CS_Raycaster
         private void SetImage(Image img)
         {
             pictureBoxMain.Image = img;
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.logicThread.Abort();
         }
     }
 }
