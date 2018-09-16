@@ -57,12 +57,6 @@ namespace CS_Raycaster
         // This pen will be used to draw the pixels for each frame.
         Pen pen = new Pen(Color.White,1);
 
-
-        public void UpdatePositions()
-        {
-
-        }
-
         private void ClearFrame(Bitmap frame)
         {
             using (Graphics g = Graphics.FromImage(frame))
@@ -247,6 +241,18 @@ namespace CS_Raycaster
                             pen.Color = Color.FromArgb(255, 255, 255, 0);
                             break;
                         }
+                    case 5:
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 175, 175, 0);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255, 255, 255, 0);
+                            break;
+                        }
+
                 }
 
                 // Now we draw to the frame.
