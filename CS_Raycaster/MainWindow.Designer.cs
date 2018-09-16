@@ -32,6 +32,8 @@
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
             this.FPS = new System.Windows.Forms.Label();
             this.FPSTimer = new System.Windows.Forms.Timer(this.components);
+            this.PlayerX = new System.Windows.Forms.Label();
+            this.PlayerY = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,12 +61,38 @@
             // 
             this.FPSTimer.Tick += new System.EventHandler(this.FPSTimer_Tick);
             // 
+            // PlayerX
+            // 
+            this.PlayerX.AutoSize = true;
+            this.PlayerX.BackColor = System.Drawing.Color.Transparent;
+            this.PlayerX.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.PlayerX.ForeColor = System.Drawing.Color.Lime;
+            this.PlayerX.Location = new System.Drawing.Point(-3, 17);
+            this.PlayerX.Name = "PlayerX";
+            this.PlayerX.Size = new System.Drawing.Size(24, 17);
+            this.PlayerX.TabIndex = 2;
+            this.PlayerX.Text = "12";
+            // 
+            // PlayerY
+            // 
+            this.PlayerY.AutoSize = true;
+            this.PlayerY.BackColor = System.Drawing.Color.Transparent;
+            this.PlayerY.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.PlayerY.ForeColor = System.Drawing.Color.Lime;
+            this.PlayerY.Location = new System.Drawing.Point(-3, 34);
+            this.PlayerY.Name = "PlayerY";
+            this.PlayerY.Size = new System.Drawing.Size(24, 17);
+            this.PlayerY.TabIndex = 3;
+            this.PlayerY.Text = "12";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.PlayerY);
+            this.Controls.Add(this.PlayerX);
             this.Controls.Add(this.FPS);
             this.Controls.Add(this.pictureBoxMain);
             this.Name = "MainWindow";
@@ -83,6 +111,8 @@
         private System.Windows.Forms.PictureBox pictureBoxMain;
         private System.Windows.Forms.Label FPS;
         private System.Windows.Forms.Timer FPSTimer;
+        private System.Windows.Forms.Label PlayerX;
+        private System.Windows.Forms.Label PlayerY;
     }
 }
 

@@ -54,12 +54,11 @@ namespace CS_Raycaster
                 frameRate = (1 / (frameTimeDouble/1000));
                 frameTimeDouble = this.frameTime.ElapsedMilliseconds;
             }
-
         }
 
         private void SetImage(Image img)
         {
-            pictureBoxMain.Image = img;
+            this.pictureBoxMain.Image = img;
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -69,7 +68,9 @@ namespace CS_Raycaster
 
         private void FPSTimer_Tick(object sender, EventArgs e)
         {
-            this.FPS.Text =  this.frameRate.ToString("###");
+            this.FPS.Text = this.frameRate.ToString("###");
+            this.PlayerX.Text = this.RC.PlayerPosition.x.ToString("##.##");
+            this.PlayerY.Text = this.RC.PlayerPosition.y.ToString("##.##");
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
