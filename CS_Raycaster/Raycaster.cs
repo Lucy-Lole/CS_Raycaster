@@ -13,7 +13,7 @@ namespace CS_Raycaster
     public class Raycaster
     {
         // Creating the world map.
-        readonly int[,] worldMap = new int[,]
+       readonly int[,] worldMap = new int[,]
         {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -48,8 +48,6 @@ namespace CS_Raycaster
         // Vector for the width of the camera plane.
         Vector cameraPlane = new Vector(0, 1);
         // These will be used to calculate frame lengths.
-        double currTime = 0;
-        double lastTime = 0;
 
         double moveSpeed;
         double rotSpeed;
@@ -74,7 +72,7 @@ namespace CS_Raycaster
             }
         }
 
-        
+        #region FrameDrawing
         public Image NewFrame(int width,int height)
         {
             // First we create the frame we'll be drawing to.
@@ -241,13 +239,27 @@ namespace CS_Raycaster
                             pen.Color = Color.FromArgb(255, 255, 255, 0);
                             break;
                         }
+                    case 5:
+                        if (side == 1)
+                        {
+                            pen.Color = Color.FromArgb(255, 175, 175, 0);
+                            break;
+                        }
+                        else
+                        {
+                            pen.Color = Color.FromArgb(255, 255, 255, 0);
+                            break;
+                        }
+
                 }
 
                 // Now we draw to the frame.
                 DrawLine(i, drawStart, drawEnd, pen, bmp);
             }
+
             return bmp;
         }
+#endregion
 
         public void Turn(bool turnRight)
         {
