@@ -9,50 +9,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace CS_Raycaster
 {
     public partial class MainWindow : Form
     {
-        public const int W_WIDTH = 1200;
-        public const int W_HEIGHT = 800;
+        private const int W_WIDTH = 1200;
+        private const int W_HEIGHT = 800;
 
         private Thread logicThread;
 
-        Stopwatch stopwatch = new Stopwatch();
+        private Stopwatch frameTime = new Stopwatch();
 
         Raycaster RC = new Raycaster();
+
+        private bool forward = false, back = false, left = false, right = false;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this.KeyPress +=
-                new KeyPressEventHandler(MainWindow_KeyPress);
+            this.pictureBoxMain.Size = new Size(W_WIDTH, W_HEIGHT);
+            this.ClientSize = new Size(W_WIDTH, W_HEIGHT);
+
 
             logicThread = new Thread(RunLoop);
             logicThread.Start();
-        }
-
-        public void MainWindow_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Key Pressed!");
-            if (e.KeyChar == 'w')
-            {
-                RC.Move(true);
-            }
-            if (e.KeyChar == 's')
-            {
-                RC.Move(false);
-            }
-            if (e.KeyChar == 'a')
-            {
-                RC.TurnLeft();
-            }
-            if (e.KeyChar == 'd')
-            {
-                RC.TurnRight();
-            }
         }
 
         public void RunLoop()
@@ -60,11 +43,12 @@ namespace CS_Raycaster
             double frameTimeDouble = 0;
             while (true)
             {
-                this.stopwatch.Restart();
+                this.frameTime.Restart();
+                this.MovePlayer();
                 RC.UpdateFramerate(frameTimeDouble);
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
-                this.stopwatch.Stop();
-                frameTimeDouble = this.stopwatch.ElapsedMilliseconds;
+                this.frameTime.Stop();
+                frameTimeDouble = this.frameTime.ElapsedMilliseconds;
             }
 
         }
@@ -72,6 +56,76 @@ namespace CS_Raycaster
         private void SetImage(Image img)
         {
             pictureBoxMain.Image = img;
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.logicThread.Abort();
+        }
+
+        private void MainWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.W))
+            {
+                this.forward = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.S))
+            {
+                this.back = true;
+            }
+            if (Keyboard.IsKeyDown(Key.A))
+            {
+                this.left = true;
+            }
+            if (Keyboard.IsKeyDown(Key.D))
+            {
+                this.right = true;
+            }
+        }
+
+        private void MainWindow_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.W))
+            {
+                this.forward = false;
+            }
+
+            if (!Keyboard.IsKeyDown(Key.S))
+            {
+                this.back = false;
+            }
+            if (!Keyboard.IsKeyDown(Key.A))
+            {
+                this.left = false;
+            }
+            if (!Keyboard.IsKeyDown(Key.D))
+            {
+                this.right = false;
+            }
+        }
+
+        private void MovePlayer()
+        {
+            if (this.forward)
+            {
+                RC.Move(true);
+            }
+
+            if (this.back)
+            {
+                RC.Move(false);
+            }
+
+            if (this.left)
+            {
+                RC.Turn(false);
+            }
+
+            if (this.right)
+            {
+                RC.Turn(true);
+            }
         }
     }
 }

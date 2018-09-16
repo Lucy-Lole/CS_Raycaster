@@ -36,7 +36,7 @@
             // 
             this.pictureBoxMain.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxMain.Name = "pictureBoxMain";
-            this.pictureBoxMain.Size = new System.Drawing.Size(W_WIDTH, W_HEIGHT);
+            this.pictureBoxMain.Size = new System.Drawing.Size(100, 50);
             this.pictureBoxMain.TabIndex = 0;
             this.pictureBoxMain.TabStop = false;
             // 
@@ -45,10 +45,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(W_WIDTH, W_HEIGHT);
+            this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.pictureBoxMain);
             this.Name = "MainWindow";
             this.Text = "MainWindow";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainWindow_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainWindow_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
             this.ResumeLayout(false);
 
