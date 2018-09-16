@@ -57,12 +57,6 @@ namespace CS_Raycaster
         // This pen will be used to draw the pixels for each frame.
         Pen pen = new Pen(Color.White,1);
 
-
-        public void UpdatePositions()
-        {
-
-        }
-
         private void ClearFrame(Bitmap frame)
         {
             using (Graphics g = Graphics.FromImage(frame))
@@ -308,17 +302,9 @@ namespace CS_Raycaster
 
         public void UpdateFramerate(double frameTime)
         {
-            //lastTime = currTime;
-            //currTime = DateTime.Now.Ticks;
             frameTime = frameTime/1000;
             moveSpeed = frameTime * 5.0;
             rotSpeed = frameTime * 3.0;
-
-            if (this.moveSpeed < 0 || this.rotSpeed < 0)
-            {
-                Debug.WriteLine("Error in Math");
-                Debug.WriteLine(this.currTime + " - " + this.lastTime);
-            }
         }
         
 

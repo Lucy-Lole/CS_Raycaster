@@ -22,9 +22,11 @@ namespace CS_Raycaster
 
         private Stopwatch frameTime = new Stopwatch();
 
-        Raycaster RC = new Raycaster();
+        private Raycaster RC = new Raycaster();
 
         private bool forward = false, back = false, left = false, right = false;
+
+        private double frameRate = 30;
 
         public MainWindow()
         {
@@ -33,6 +35,7 @@ namespace CS_Raycaster
             this.pictureBoxMain.Size = new Size(W_WIDTH, W_HEIGHT);
             this.ClientSize = new Size(W_WIDTH, W_HEIGHT);
 
+            FPSTimer.Start();
 
             logicThread = new Thread(RunLoop);
             logicThread.Start();
@@ -40,7 +43,7 @@ namespace CS_Raycaster
 
         public void RunLoop()
         {
-            double frameTimeDouble = 0;
+            double frameTimeDouble = 1000;
             while (true)
             {
                 this.frameTime.Restart();
@@ -48,6 +51,7 @@ namespace CS_Raycaster
                 RC.UpdateFramerate(frameTimeDouble);
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
                 this.frameTime.Stop();
+                frameRate = (1 / (frameTimeDouble/1000));
                 frameTimeDouble = this.frameTime.ElapsedMilliseconds;
             }
 
@@ -61,6 +65,11 @@ namespace CS_Raycaster
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.logicThread.Abort();
+        }
+
+        private void FPSTimer_Tick(object sender, EventArgs e)
+        {
+            this.FPS.Text =  this.frameRate.ToString("###");
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
