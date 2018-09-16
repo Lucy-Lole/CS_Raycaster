@@ -24,6 +24,8 @@ namespace CS_Raycaster
 
         Raycaster RC = new Raycaster();
 
+        private bool forward = false, back = false, left = false, right = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,32 +33,9 @@ namespace CS_Raycaster
             this.pictureBoxMain.Size = new Size(W_WIDTH, W_HEIGHT);
             this.ClientSize = new Size(W_WIDTH, W_HEIGHT);
 
-            this.KeyPress +=
-                new KeyPressEventHandler(MainWindow_KeyPress);
 
             logicThread = new Thread(RunLoop);
             logicThread.Start();
-        }
-
-        public void MainWindow_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.W))
-            {
-                RC.Move(true);
-            }
-
-            if (Keyboard.IsKeyDown(Key.S))
-            {
-                RC.Move(false);
-            }
-            if (Keyboard.IsKeyDown(Key.A))
-            {
-                RC.Turn(false);
-            }
-            if (Keyboard.IsKeyDown(Key.D))
-            {
-                RC.Turn(true);
-            }
         }
 
         public void RunLoop()
@@ -65,7 +44,7 @@ namespace CS_Raycaster
             while (true)
             {
                 this.frameTime.Restart();
-                RC.UpdatePositions();
+                this.MovePlayer();
                 RC.UpdateFramerate(frameTimeDouble);
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
                 this.frameTime.Stop();
@@ -82,6 +61,71 @@ namespace CS_Raycaster
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.logicThread.Abort();
+        }
+
+        private void MainWindow_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.W))
+            {
+                this.forward = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.S))
+            {
+                this.back = true;
+            }
+            if (Keyboard.IsKeyDown(Key.A))
+            {
+                this.left = true;
+            }
+            if (Keyboard.IsKeyDown(Key.D))
+            {
+                this.right = true;
+            }
+        }
+
+        private void MainWindow_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.W))
+            {
+                this.forward = false;
+            }
+
+            if (!Keyboard.IsKeyDown(Key.S))
+            {
+                this.back = false;
+            }
+            if (!Keyboard.IsKeyDown(Key.A))
+            {
+                this.left = false;
+            }
+            if (!Keyboard.IsKeyDown(Key.D))
+            {
+                this.right = false;
+            }
+        }
+
+        private void MovePlayer()
+        {
+            if (this.forward)
+            {
+                RC.Move(true);
+            }
+
+            if (this.back)
+            {
+                RC.Move(false);
+            }
+
+            if (this.left)
+            {
+                RC.Turn(false);
+            }
+
+            if (this.right)
+            {
+                RC.Turn(true);
+            }
         }
     }
 }

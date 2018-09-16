@@ -279,8 +279,8 @@ namespace CS_Raycaster
 
         public void Move(bool forwards)
         {
-            Console.WriteLine("Moving");
-            Console.WriteLine(moveSpeed);
+            Debug.WriteLine("Moving");
+            Debug.WriteLine(moveSpeed);
             if (forwards)
             {
                 if (worldMap[(int)(playerPosition.x+playerDirection.x*moveSpeed),(int)(playerPosition.y)] == 0)
