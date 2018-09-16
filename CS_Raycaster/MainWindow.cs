@@ -8,15 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace CS_Raycaster
 {
     public partial class MainWindow : Form
     {
-        public readonly int W_WIDTH = 1200;
-        public readonly int W_HEIGHT = 800;
+        public const int W_WIDTH = 1200;
+        public const int W_HEIGHT = 800;
 
         private Thread logicThread;
+
+        Stopwatch stopwatch = new Stopwatch();
 
         Raycaster RC = new Raycaster();
 
@@ -33,7 +36,7 @@ namespace CS_Raycaster
 
         public void MainWindow_KeyPress(object sender, KeyPressEventArgs e)
         {
-            Console.WriteLine("Key Pressed!");
+            System.Diagnostics.Debug.WriteLine("Key Pressed!");
             if (e.KeyChar == 'w')
             {
                 RC.Move(true);
@@ -54,14 +57,14 @@ namespace CS_Raycaster
 
         public void RunLoop()
         {
-            
+            double frameTimeDouble = 0;
             while (true)
             {
-                RC.UpdatePositions();
-                RC.UpdateFramerate();
+                this.stopwatch.Restart();
+                RC.UpdateFramerate(frameTimeDouble);
                 SetImage(RC.NewFrame(W_WIDTH, W_HEIGHT));
-
-              
+                this.stopwatch.Stop();
+                frameTimeDouble = this.stopwatch.ElapsedMilliseconds;
             }
 
         }

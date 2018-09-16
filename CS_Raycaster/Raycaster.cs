@@ -10,7 +10,7 @@ namespace CS_Raycaster
     public class Raycaster
     {
         // Creating the world map.
-        readonly int[,] worldMap = new int[,]
+       readonly int[,] worldMap = new int[,]
         {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -45,20 +45,12 @@ namespace CS_Raycaster
         // Vector for the width of the camera plane.
         Vector cameraPlane = new Vector(0, 1);
         // These will be used to calculate frame lengths.
-        double currTime = 0;
-        double lastTime = 0;
 
         double moveSpeed;
         double rotSpeed;
 
         // This pen will be used to draw the pixels for each frame.
         Pen pen = new Pen(Color.White,1);
-
-
-        public void UpdatePositions()
-        {
-
-        }
 
         private void ClearFrame(Bitmap frame)
         {
@@ -77,7 +69,7 @@ namespace CS_Raycaster
             }
         }
 
-        
+        #region FrameDrawing
         public Image NewFrame(int width,int height)
         {
             // First we create the frame we'll be drawing to.
@@ -249,8 +241,10 @@ namespace CS_Raycaster
                 // Now we draw to the frame.
                 DrawLine(i, drawStart, drawEnd, pen, bmp);
             }
+
             return bmp;
         }
+#endregion
 
         public void TurnLeft()
         {
@@ -275,8 +269,6 @@ namespace CS_Raycaster
 
         public void Move(bool forwards)
         {
-            Console.WriteLine("Moving");
-            Console.WriteLine(moveSpeed);
             if (forwards)
             {
                 if (worldMap[(int)(playerPosition.x+playerDirection.x*moveSpeed),(int)(playerPosition.y)] == 0)
@@ -302,13 +294,12 @@ namespace CS_Raycaster
         }
 
 
-        public void UpdateFramerate()
+        public void UpdateFramerate(double frameTime)
         {
-            lastTime = currTime;
-            currTime = DateTime.Now.Millisecond;
-            double frameTime = (currTime - lastTime)/1000;
+            frameTime = frameTime/1000;
             moveSpeed = frameTime * 5.0;
             rotSpeed = frameTime * 3.0;
+            System.Diagnostics.Debug.WriteLine(moveSpeed);
         }
         
 
