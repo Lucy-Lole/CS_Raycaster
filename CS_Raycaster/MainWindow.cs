@@ -97,6 +97,10 @@ namespace CS_Raycaster
             {
                 this.right = true;
             }
+            if (Keyboard.IsKeyDown(Key.Escape))
+            {
+                Application.Exit();
+            }
         }
 
         private void MainWindow_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
