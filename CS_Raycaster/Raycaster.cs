@@ -9,40 +9,43 @@ using System.Drawing;
 namespace CS_Raycaster
 {
     using System.Diagnostics;
+    using System.IO;
 
     public class Raycaster
     {
         // Creating the world map.
        readonly int[,] worldMap = new int[,]
         {
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-            {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-            {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,5,0,0,0,1},
-            {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1},
-            {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,5,0,0,0,0,0,1},
-            {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,5,0,0,0,0,0,0,1},
-            {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,1},
-            {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+          {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7},
+          {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
+          {4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
+          {4,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
+          {4,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
+          {4,0,0,4,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,0,7,7,7,7,7},
+          {4,0,0,5,0,0,0,0,5,0,5,0,5,0,5,0,5,7,0,0,0,7,7,7,1},
+          {4,0,0,6,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
+          {4,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,1},
+          {4,0,0,8,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8},
+          {4,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,7,7,7,1},
+          {4,0,0,0,0,0,0,0,5,5,5,5,0,5,5,5,5,7,7,7,7,7,7,7,1},
+          {6,6,6,6,6,6,6,6,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
+          {8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+          {6,6,6,6,6,6,6,0,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6},
+          {4,4,4,4,4,4,4,0,4,4,4,6,0,6,2,2,2,2,2,2,2,3,3,3,3},
+          {4,0,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
+          {4,0,0,0,0,0,0,0,0,0,0,0,0,6,2,0,0,5,0,0,2,0,0,0,2},
+          {4,0,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
+          {4,0,0,6,0,6,0,0,0,0,4,6,0,0,0,0,0,5,0,0,0,0,0,0,2},
+          {4,0,0,0,5,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2},
+          {4,0,0,6,0,6,0,0,0,0,4,6,0,6,2,0,0,5,0,0,2,0,0,0,2},
+          {4,0,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2},
+          {4,4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3}
         };
 
+
+
         // Player's position in the map.
-        Vector playerPosition = new Vector(12, 12);
+        Vector playerPosition = new Vector(2, 2);
         // Player's direction vector.
         Vector playerDirection = new Vector(-1, 0);
         // Vector for the width of the camera plane.
@@ -58,9 +61,27 @@ namespace CS_Raycaster
         // Keeps track of the last time fps was checked.
         private DateTime lastTime;
 
+        // Texture variables.
+        const int textureHeight = 64;
+        const int textureWidth = 64;
+
         // This pen will be used to draw the pixels for each frame.
         Pen pen = new Pen(Color.White,1);
 
+        Bitmap[] textures = new Bitmap[8];
+
+
+        public Raycaster()
+        {
+        textures[0] = getBitmap("\\pics\\bluestone.png");
+        textures[1] = getBitmap("\\pics\\colorstone.png");
+        textures[2] = getBitmap("\\pics\\eagle.png");
+        textures[3] = getBitmap("\\pics\\greystone.png");
+        textures[4] = getBitmap("\\pics\\mossy.png");
+        textures[5] = getBitmap("\\pics\\purplestone.png");
+        textures[6] = getBitmap("\\pics\\redbrick.png");
+        textures[7] = getBitmap("\\pics\\wood.png");
+        }
 
         /// <summary>
         /// Makes the given frame black.
@@ -91,6 +112,15 @@ namespace CS_Raycaster
             }
         }
 
+        private void DrawPixel(int x, int y, Pen pen, Bitmap frame)
+        {
+            using (Graphics g = Graphics.FromImage(frame))
+            {
+                SolidBrush b = new SolidBrush(pen.Color);
+                g.FillRectangle(b, x, y, 1, 1);
+            }
+        }
+
         /// <summary>
         /// Adds text to the given frame.
         /// </summary>
@@ -110,12 +140,27 @@ namespace CS_Raycaster
             }
         }
 
+        private Bitmap getBitmap(String filePath)
+        {
+            Bitmap bmp = new Bitmap(Image.FromFile(Directory.GetCurrentDirectory() + filePath));
+            return bmp;
+        }
+
+
         #region FrameDrawing
         public Image NewFrame(int width,int height)
         {
             // First we create the frame we'll be drawing to.
             Bitmap bmp = new Bitmap(width, height);
             ClearFrame(bmp);
+
+            ///
+            /// NEEDS TO BE COMMENTED
+            ///
+
+            
+
+
 
             for (int i = 0; i < width;i++)
             {
@@ -140,6 +185,7 @@ namespace CS_Raycaster
                 double deltaDistY = Math.Abs(1 / rayDir.y);
                 // This var is for the overall length of the ray calculations
                 double perpWallDist;
+
                 // Each time we check the next square we step either 1 in the x or 1 in the y, they will be 1 or -1 depending on whether 
                 // the character is facing towards the origin or away.
                 int stepX;
@@ -228,7 +274,70 @@ namespace CS_Raycaster
 
                 // Now we pick the colour to draw the line in, this is based upon the colour of the wall
                 // and is then made darker if the wall is x aligned or y aligned.
-                switch(worldMap[mapX, mapY])
+
+
+
+
+
+
+                ///
+                /// NEEDS TO BE COMMENTED
+                ///
+
+                
+                int texNum = worldMap[mapX, mapY] - 1;
+
+                double wallX;
+
+                if (side == 0)
+                {
+                    wallX = playerPosition.y + perpWallDist * rayDir.y;
+
+                }
+                else
+                {
+                    wallX = playerPosition.x + perpWallDist * rayDir.x;
+                }
+
+                wallX -= Math.Floor(wallX);
+
+                int texX = (int)(wallX * (double)(textureWidth));
+                if (side == 0 && rayDir.x > 0)
+                {
+                    texX = textureWidth - texX - 1;
+                }
+                if (side == 1 && rayDir.y < 0)
+                {
+                    texX = textureWidth - texX - 1;
+                }
+
+                pen.Color = Color.FromArgb(255, 0, 102, 102);
+
+                for (int y = drawEnd; y < drawStart; y++)
+                {
+                    int d = y * 256 - height * 128 + columnHeight * 128;
+
+                    int texY = ((d * textureHeight) / columnHeight) / 256;
+                    pen.Color = Color.FromArgb(textures[texNum].GetPixel(texX, texY).ToArgb());
+                    DrawPixel(i, y, pen, bmp);
+
+                }
+                
+
+
+
+                ///
+                /// NEEDS TO BE COMMENTED
+                ///
+
+
+
+
+
+
+                
+                /*
+                switch (worldMap[mapX, mapY])
                 {
                     case 1:
                         if (side == 1)
@@ -288,11 +397,12 @@ namespace CS_Raycaster
                             pen.Color = Color.FromArgb(255, 220, 255, 0);
                             break;
                         }
-
+                        
                 }
 
                 // Now we draw the line to the frame.
                 DrawLine(i, drawStart, drawEnd, pen, bmp);
+                */
             }
             // Finally we add any text we want to the frame now its all drawn.
             AddTextToFrame(10, 10, 12, framesPerSecond.ToString(), Color.White, bmp);
