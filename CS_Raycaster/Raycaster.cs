@@ -47,14 +47,25 @@ namespace CS_Raycaster
         Vector playerDirection = new Vector(-1, 0);
         // Vector for the width of the camera plane.
         Vector cameraPlane = new Vector(0, 1);
-        // These will be used to calculate frame lengths.
+        // These are for the moving and turning of the player
+        private double moveSpeed;
+        private double rotSpeed;
 
-        double moveSpeed;
-        double rotSpeed;
+        // This is used to keep track of the current frames per second.
+        private double framesPerSecond = 0;
+        // Keeps track of how many frames have been drawn since last fps check.
+        private int framesRendered;
+        // Keeps track of the last time fps was checked.
+        private DateTime lastTime;
 
         // This pen will be used to draw the pixels for each frame.
         Pen pen = new Pen(Color.White,1);
 
+
+        /// <summary>
+        /// Makes the given frame black.
+        /// </summary>
+        /// <param name="frame">Frame to clear</param>
         private void ClearFrame(Bitmap frame)
         {
             using (Graphics g = Graphics.FromImage(frame))
@@ -64,11 +75,38 @@ namespace CS_Raycaster
             }
         }
 
+        /// <summary>
+        /// Draws a vertical line to the next frame to be drawn.
+        /// </summary>
+        /// <param name="x">Line X position</param>
+        /// <param name="startY">Line starting Y position</param>
+        /// <param name="endY">Line ending Y position</param>
+        /// <param name="pen">Pen to be used to draw</param>
+        /// <param name="frame">Frame to draw on</param>
         private void DrawLine(int x, int startY, int endY, Pen pen, Bitmap frame)
         {
             using (Graphics g = Graphics.FromImage(frame))
             {
                 g.DrawLine(pen, x, startY, x, endY);
+            }
+        }
+
+        /// <summary>
+        /// Adds text to the given frame.
+        /// </summary>
+        /// <param name="x">Text X position</param>
+        /// <param name="y">Text Y position</param>
+        /// <param name="size">Text size</param>
+        /// <param name="text">Text to be drawn</param>
+        /// <param name="color">Text color</param>
+        /// <param name="frame">Frame to add to</param>
+        private void AddTextToFrame(int x, int y, int size, string text, Color color, Bitmap frame)
+        {
+            using (Graphics g = Graphics.FromImage(frame))
+            {
+                SolidBrush b = new SolidBrush(color);
+                Font f = new Font("Consolas", size);
+                g.DrawString(text, f, b, x, y);
             }
         }
 
@@ -189,7 +227,7 @@ namespace CS_Raycaster
                 }
 
                 // Now we pick the colour to draw the line in, this is based upon the colour of the wall
-                // and is then made darker the further it is from the player.
+                // and is then made darker if the wall is x aligned or y aligned.
                 switch(worldMap[mapX, mapY])
                 {
                     case 1:
@@ -253,9 +291,11 @@ namespace CS_Raycaster
 
                 }
 
-                // Now we draw to the frame.
+                // Now we draw the line to the frame.
                 DrawLine(i, drawStart, drawEnd, pen, bmp);
             }
+            // Finally we add any text we want to the frame now its all drawn.
+            AddTextToFrame(10, 10, 12, framesPerSecond.ToString(), Color.White, bmp);
 
             return bmp;
         }
@@ -265,6 +305,9 @@ namespace CS_Raycaster
         {
             if (!turnRight)
             {
+                // We use a rotation matrix to rotate the plane and direction vectors.
+                // First we keep track of the old direction, so that the transformation on X first
+                // doesn't affect the Y transformation.
                 Vector oldDirection = new Vector(playerDirection.x, playerDirection.y);
                 playerDirection.x = (playerDirection.x * Math.Cos(rotSpeed) - playerDirection.y * Math.Sin(rotSpeed));
                 playerDirection.y = (oldDirection.x * Math.Sin(rotSpeed) + playerDirection.y * Math.Cos(rotSpeed));
@@ -289,8 +332,10 @@ namespace CS_Raycaster
             Debug.WriteLine(moveSpeed);
             if (forwards)
             {
+                // First we check that moving wont put us in a wall
                 if (worldMap[(int)(playerPosition.x+playerDirection.x*moveSpeed),(int)(playerPosition.y)] == 0)
                 {
+                    // If it doesnt put us in a wall, we can move forwards (or backwards).
                     playerPosition.x += playerDirection.x * moveSpeed;
                 }
                 if (worldMap[(int)(playerPosition.x),(int)(playerPosition.y + playerDirection.y * moveSpeed)] == 0 )
@@ -314,17 +359,22 @@ namespace CS_Raycaster
 
         public void UpdateFramerate(double frameTime)
         {
-            //lastTime = currTime;
-            //currTime = DateTime.Now.Ticks;
+            // Add one to the count of frames rendered.
+            framesRendered++;
+            // If a second has elapsed, we can update the fps.
+            if ((DateTime.Now - lastTime).TotalSeconds >= 1)
+            {
+                lastTime = DateTime.Now;
+                framesPerSecond = framesRendered;
+                framesRendered = 0;
+            }
+
+            // The frameTime is the time between 2 frames, it is used to keep speed constant regardless of the 
+            // framerate that the application is running at.
             frameTime = frameTime/1000;
+            // Each frame we update the speed based on how long the frames are taking.
             moveSpeed = frameTime * 5.0;
             rotSpeed = frameTime * 3.0;
-
-            if (this.moveSpeed < 0 || this.rotSpeed < 0)
-            {
-                Debug.WriteLine("Error in Math");
-                Debug.WriteLine(this.currTime + " - " + this.lastTime);
-            }
         }
         
 

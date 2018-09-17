@@ -1,6 +1,3 @@
 TODO:
 
---Multiple movement buttons at once
--Framerate counter/position counter
--Comment code
----add wall type 5
+-
